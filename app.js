@@ -5,17 +5,17 @@ const app = express();
 
 const BOT_TOKEN = '7201865706:AAFL1-MLtGqpvqDsnO2GoaIqB_qcpTwsd0I'; // Replace with your bot token
 
-function verifyTelegramData(initData) {
-    const data = querystring.parse(initData);
-    const hash = crypto.createHash('sha256').update(initData + BOT_TOKEN).digest('hex');
-    return data.auth_date && data.hash === hash;
-}
+// function verifyTelegramData(initData) {
+//     const data = querystring.parse(initData);
+//     const hash = crypto.createHash('sha256').update(initData + BOT_TOKEN).digest('hex');
+//     return data.auth_date && data.hash === hash;
+// }
 
 app.get('/verify', (req, res) => {
     const initData = req.query.init_data;
-    if (verifyTelegramData(initData)) {
+   if(initData){
         // Extract user information from initData
-        const user = querystring.parse(initData);
+        const user = initData;
         // Save user data or process it as needed
         res.redirect(`/dashboard?telegramId=${user.id}`);
     } else {
