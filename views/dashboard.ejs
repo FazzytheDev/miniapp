@@ -20,8 +20,7 @@
         <script type="text/javascript">
             Telegram.WebApp.onEvent('init', function() {
                 const user = Telegram.WebApp.initDataUnsafe.user;
-                const url = `https://miniapp-ahcy.onrender.com/verify?init_data=${encodeURIComponent(Telegram.WebApp.initData)}`;
-                
+                const url = `https://miniapp-ahcy.onrender.com/?telegramId=${user.id}`;
                 window.location.href = url;
             });
         </script>
