@@ -3,12 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APP</title>
+    <title>User Dashboard</title>
 </head>
 <body>
-    <h1><%= telegramId %></h1>
-    <h2><%= username %></h2>
-    <h2><%= balance %></h2>
-    <h2><%= referralId %></h2>
+    <% if (telegramId) { %>
+        <h1>Welcome, <%= user.first_name %> <%= user.last_name %></h1>
+        <p>Your Telegram ID is <%= telegramId %></p>
+        <!-- Display dashboard content here -->
+        <div>
+            <h2>Your Dashboard</h2>
+            <p>Here are your personalized options:</p>
+            <!-- Add dashboard components -->
+        </div>
+    <% } else { %>
+        <h1>Loading...</h1>
+        <script type="text/javascript">
+            Telegram.WebApp.onEvent('init', function() {
+                const user = Telegram.WebApp.initDataUnsafe.user;
+                const url = `https://miniapp-ahcy.onrender.com/verify?init_data=${encodeURIComponent(Telegram.WebApp.initData)}`;
+                
+                window.location.href = url;
+            });
+        </script>
+    <% } %>
 </body>
 </html>

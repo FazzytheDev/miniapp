@@ -1,35 +1,34 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const TelegramBot = require('node-telegram-bot-api');
-const ejs = require('ejs');
-
+const crypto = require('crypto');
+const querystring = require('querystring');
 const app = express();
 
-app.use(bodyParser.json());
-app.use(express.static('public'));
-app.set('view engine', 'ejs');
-app.get('/', (req, res) => {
-    res.render('index');
-})
-app.post('/auth/telegram', async(req, res) => {
-    const user = req.body.user;
-    if(user && user.id){
-        res.render('dashboard', {
-            telegramId: user.id,
-            username: user.username,
-            referralId: user.referralId,
-            balance: 1000
-        });
-    }
-    else{
-        res.render('/error', {
-            error: 'not found'
-        });
+const BOT_TOKEN = '7201865706:AAFL1-MLtGqpvqDsnO2GoaIqB_qcpTwsd0I'; // Replace with your bot token
+
+function verifyTelegramData(initData) {
+    const data = querystring.parse(initData);
+    const hash = crypto.createHash('sha256').update(initData + BOT_TOKEN).digest('hex');
+    return data.auth_date && data.hash === hash;
+}
+
+app.get('/verify', (req, res) => {
+    const initData = req.query.init_data;
+    if (verifyTelegramData(initData)) {
+        // Extract user information from initData
+        const user = querystring.parse(initData);
+        // Save user data or process it as needed
+        res.redirect(`/dashboard?telegramId=${user.id}`);
+    } else {
+        res.status(400).send('Invalid data');
     }
 });
 
+app.get('/dashboard', (req, res) => {
+    const telegramId = req.query.telegramId;
+    // Render the dashboard with user data
+    res.render('dashboard', { telegramId });
+});
 
 app.listen(3000, () => {
-    console.log('server started at port xoxo');
-})
+    console.log('Server running on port 3000');
+});
