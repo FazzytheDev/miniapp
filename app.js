@@ -9,7 +9,9 @@ const app = express();
 app.use(bodyParser.json());
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
-
+app.get('/', (req, res) => {
+    res.render('index');
+})
 app.post('/auth/telegram', async(req, res) => {
     const user = req.body.user;
     if(user && user.id){
