@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
     <% if (telegramId) { %>
@@ -19,10 +20,14 @@
         <h1>Loading...</h1>
         <script type="text/javascript">
             Telegram.WebApp.onEvent('init', function() {
-                const user = Telegram.WebApp.initDataUnsafe.user;
-                const url = `https://miniapp-ahcy.onrender.com/verify?telegramId=${user.id}`;
+                const initData = Telegram.WebApp.initData;
+                const url = `https://miniapp-ahcy.onrender.com/verify?init_data=${encodeURIComponent(initData)}`;
+                
                 window.location.href = url;
             });
+
+            // Optionally, you can initialize the Telegram Web App and set up more event listeners
+            Telegram.WebApp.init();
         </script>
     <% } %>
 </body>
