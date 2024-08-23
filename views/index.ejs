@@ -30,6 +30,24 @@
                 Username: ${user.username || 'N/A'}<br>
                 Language Code: ${user.language_code || 'N/A'}
             `;
+
+            // Send the data to the server
+            fetch('/send-telegram-data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user: initDataUnsafe.user,
+                    initData: Telegram.WebApp.initData
+                })
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Data sent to server successfully!');
+                } else {
+                    console.log('Failed to send data.');
+                }
+            });
         } else {
             userInfoElement.innerHTML = 'No user data available.';
         }
