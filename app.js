@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const app = express();
 app.use(bodyParser.json());
 app.set('view engine', 'ejs');
-const BOT_TOKEN = 'YOUR_BOT_TOKEN'; // Replace with your actual bot token
+const BOT_TOKEN = '7201865706:AAFL1-MLtGqpvqDsnO2GoaIqB_qcpTwsd0I'; // Replace with your actual bot token
 
 // Function to verify Telegram data
 function verifyTelegramData(initData) {
