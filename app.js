@@ -1,8 +1,10 @@
 const express = require('express');
 const crypto = require('crypto');
 const querystring = require('querystring');
+const bodyParser = require('body-parser');
 const app = express();
-
+app.use(bodyParser.json());
+app.set('view engine', 'ejs');
 const BOT_TOKEN = 'YOUR_BOT_TOKEN'; // Replace with your actual bot token
 
 // Function to verify Telegram data
