@@ -38,7 +38,7 @@ app.get('/dashboard', (req, res) => {
     const telegramId = req.query.telegramId;
     if (telegramId) {
         // Fetch and render user data
-        res.render('dashboard', { telegramId });
+        res.render('dashboard', { telegramId: telegramId });
     } else {
         res.status(400).send('Telegram ID is missing');
     }
