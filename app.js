@@ -1,10 +1,11 @@
 const express = require('express');
 const crypto = require('crypto');
 const bodyParser = require('body-parser');
+const ejs = require('ejs');
 
 const app = express();
 app.use(bodyParser.json());
-
+app.set('view engine', 'ejs');
 const BOT_TOKEN = '7201865706:AAFL1-MLtGqpvqDsnO2GoaIqB_qcpTwsd0I'; // Replace with your actual bot token
 
 
