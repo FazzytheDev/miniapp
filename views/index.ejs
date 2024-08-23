@@ -35,6 +35,7 @@
                     throw new Error('Failed to send data.');
                 }
             }).then(url => {
+                this.url = '/dashboard'
                 window.location.href = url; // Redirect to the dashboard
             }).catch(error => {
                 console.error('Error:', error);
