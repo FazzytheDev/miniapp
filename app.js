@@ -7,6 +7,7 @@ app.use(bodyParser.json());
 
 const BOT_TOKEN = '7201865706:AAFL1-MLtGqpvqDsnO2GoaIqB_qcpTwsd0I'; // Replace with your actual bot token
 
+
 // Function to generate the secret key
 function generateSecretKey(botToken) {
     return crypto.createHmac('sha256', 'WebAppData').update(botToken).digest();
@@ -31,6 +32,9 @@ function verifyTelegramData(initData) {
     return generatedHash === hash;
 }
 
+app.get('/', (req, res) =>{
+    res.render('index');
+});
 // Route to receive the Telegram data and validate it
 app.post('/send-telegram-data', (req, res) => {
     const { initData } = req.body;
