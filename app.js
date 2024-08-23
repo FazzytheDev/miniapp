@@ -1,47 +1,53 @@
 const express = require('express');
+const crypto = require('crypto');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
 const app = express();
 app.use(bodyParser.json());
-
-// Set view engine to EJS
 app.set('view engine', 'ejs');
+const BOT_TOKEN = '7201865706:AAFL1-MLtGqpvqDsnO2GoaIqB_qcpTwsd0I'; // Replace with your actual bot token
 
-// Route to serve the initial EJS file
-app.get('/', (req, res) => {
-    res.render('index');
-});
+// Function to generate the secret key
+function generateSecretKey(botToken) {
+    return crypto.createHmac('sha256', 'WebAppData').update(botToken).digest();
+}
 
-// Route to receive the Telegram data and render it on the dashboard
+// Function to verify Telegram data
+function verifyTelegramData(initData) {
+    const data = new URLSearchParams(initData);
+    const receivedHash = data.get('hash');
+    data.delete('hash');
+
+    // Create the data-check-string
+    const dataCheckString = Array.from(data.entries())
+        .sort((a, b) => a[0].localeCompare(b[0]))
+        .map(([key, value]) => `${key}=${value}`)
+        .join('\n');
+
+    // Generate the secret key
+    const secretKey = generateSecretKey(BOT_TOKEN);
+
+    // Generate the hash
+    const generatedHash = crypto.createHmac('sha256', secretKey)
+        .update(dataCheckString)
+        .digest('hex');
+
+    // Compare the generated hash with the received hash
+    return generatedHash === receivedHash;
+}
+
+// Route to receive the Telegram data and validate it
 app.post('/send-telegram-data', (req, res) => {
-    const { user } = req.body;
+    const { initData } = req.body;
 
-    // Render the dashboard with the received data
-    res.render('dashboard', { 
-        telegramId: user.id,
-        firstName: user.first_name,
-        lastName: user.last_name || 'N/A',
-        username: user.username || 'N/A',
-        languageCode: user.language_code || 'N/A'
-    }, (err, html) => {
-        if (err) {
-            return res.status(500).send('Error rendering dashboard.');
-        }
+    if (verifyTelegramData(initData)) {
+        const user = JSON.parse(req.body.user);
 
-        // Respond with the URL of the dashboard, using a temp view route
-        res.json({ redirectUrl: `/dashboard?telegramId=${user.id}&firstName=${user.first_name}&lastName=${user.last_name || ''}&username=${user.username || ''}&languageCode=${user.language_code || ''}` });
-    });
-});
-
-// Route to serve the dashboard with data passed as query parameters
-app.get('/dashboard', (req, res) => {
-    res.render('dashboard', { 
-        telegramId: req.query.telegramId,
-        firstName: req.query.firstName,
-        lastName: req.query.lastName || 'N/A',
-        username: req.query.username || 'N/A',
-        languageCode: req.query.languageCode || 'N/A'
-    });
+        // Proceed with your logic, e.g., rendering a dashboard or responding with success
+        res.status(200).send('Data verified successfully');
+    } else {
+        res.status(400).send('Invalid data');
+    }
 });
 
 app.listen(3000, () => {
