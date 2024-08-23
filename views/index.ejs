@@ -6,9 +6,6 @@
     <title>Telegram WebApp Client</title>
 </head>
 <body>
-    <h1>Telegram WebApp Client</h1>
-    <p id="userInfo"></p>
-    
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         // Initialize the WebApp
@@ -17,19 +14,9 @@
         // Accessing initDataUnsafe - NOT for trusting or using sensitive logic
         const initDataUnsafe = Telegram.WebApp.initDataUnsafe;
 
-        // Display the user's data on the web page
-        const userInfoElement = document.getElementById('userInfo');
-
+        // Automatically send the data to the server and redirect to the dashboard
         if (initDataUnsafe && initDataUnsafe.user) {
             const user = initDataUnsafe.user;
-            userInfoElement.innerHTML = `
-                <strong>User Info:</strong><br>
-                ID: ${user.id}<br>
-                First Name: ${user.first_name}<br>
-                Last Name: ${user.last_name || 'N/A'}<br>
-                Username: ${user.username || 'N/A'}<br>
-                Language Code: ${user.language_code || 'N/A'}
-            `;
 
             // Send the data to the server
             fetch('/send-telegram-data', {
@@ -38,26 +25,23 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    user: initDataUnsafe.user,
+                    user: user,
                     initData: Telegram.WebApp.initData
                 })
             }).then(response => {
                 if (response.ok) {
-                    console.log('Data sent to server successfully!');
+                    return response.text(); // Get the redirection URL
                 } else {
-                    console.log('Failed to send data.');
+                    throw new Error('Failed to send data.');
                 }
+            }).then(url => {
+                window.location.href = url; // Redirect to the dashboard
+            }).catch(error => {
+                console.error('Error:', error);
             });
         } else {
-            userInfoElement.innerHTML = 'No user data available.';
-        }
-
-        // Optional: You can also close the WebApp with a button
-        function closeApp() {
-            Telegram.WebApp.close();
+            document.body.innerHTML = 'No user data available.';
         }
     </script>
-
-    <button onclick="closeApp()">Close WebApp</button>
 </body>
 </html>

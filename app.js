@@ -16,13 +16,20 @@ app.get('/', (req, res) => {
 app.post('/send-telegram-data', (req, res) => {
     const { user } = req.body;
 
-    // Render the dashboard with the received data
+    // Pass data to the dashboard and render it
     res.render('dashboard', { 
         telegramId: user.id,
         firstName: user.first_name,
         lastName: user.last_name || 'N/A',
         username: user.username || 'N/A',
         languageCode: user.language_code || 'N/A'
+    }, (err, html) => {
+        if (err) {
+            return res.status(500).send('Error rendering dashboard.');
+        }
+
+        // Send the dashboard HTML as a string
+        res.send(html);
     });
 });
 
