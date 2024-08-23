@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const app = express();
 app.use(bodyParser.json());
 
-const BOT_TOKEN = 'YOUR_BOT_TOKEN'; // Replace with your actual bot token
+const BOT_TOKEN = '7201865706:AAFL1-MLtGqpvqDsnO2GoaIqB_qcpTwsd0I'; // Replace with your actual bot token
 
 // Function to generate the secret key
 function generateSecretKey(botToken) {
