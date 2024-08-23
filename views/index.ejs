@@ -30,13 +30,12 @@
                 })
             }).then(response => {
                 if (response.ok) {
-                    return response.text(); // Get the redirection URL
+                    return response.json(); // Expect a JSON response with the redirect URL
                 } else {
                     throw new Error('Failed to send data.');
                 }
-            }).then(url => {
-                this.url = '/dashboard'
-                window.location.href = url; // Redirect to the dashboard
+            }).then(data => {
+                window.location.href = data.redirectUrl; // Redirect to the dashboard
             }).catch(error => {
                 console.error('Error:', error);
             });

@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 app.post('/send-telegram-data', (req, res) => {
     const { user } = req.body;
 
-    // Pass data to the dashboard and render it
+    // Render the dashboard with the received data
     res.render('dashboard', { 
         telegramId: user.id,
         firstName: user.first_name,
@@ -28,8 +28,19 @@ app.post('/send-telegram-data', (req, res) => {
             return res.status(500).send('Error rendering dashboard.');
         }
 
-        // Send the dashboard HTML as a string
-        res.send(html);
+        // Respond with the URL of the dashboard, using a temp view route
+        res.json({ redirectUrl: `/dashboard?telegramId=${user.id}&firstName=${user.first_name}&lastName=${user.last_name || ''}&username=${user.username || ''}&languageCode=${user.language_code || ''}` });
+    });
+});
+
+// Route to serve the dashboard with data passed as query parameters
+app.get('/dashboard', (req, res) => {
+    res.render('dashboard', { 
+        telegramId: req.query.telegramId,
+        firstName: req.query.firstName,
+        lastName: req.query.lastName || 'N/A',
+        username: req.query.username || 'N/A',
+        languageCode: req.query.languageCode || 'N/A'
     });
 });
 
