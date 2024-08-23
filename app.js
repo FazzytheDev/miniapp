@@ -9,7 +9,7 @@ app.set('view engine', 'ejs');
 
 // Route to serve the initial EJS file
 app.get('/', (req, res) => {
-    res.render('webapp');
+    res.render('index');
 });
 
 // Route to receive the Telegram data and render it on the dashboard
