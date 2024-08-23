@@ -3,48 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Heirston Auth</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://unpkg.com/@telegram-webapps/sdk@1.0.0/dist/index.iife.js"></script>
+    <title>Telegram WebApp Client</title>
 </head>
 <body>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const { initDataUnsafe } = Telegram.WebApp;
-            const user = initDataUnsafe.user;
-            (function() {
-                var { postEvent } = window.telegramApps.sdk;
-                postEvent('web_app_expand');
-            })
-            if(user){
-                fetch('/auth/telegram', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({user}),
-                })
-                .then(response => {
-                    if(response.redirected){
-                        window.location.href = response.url
-                    }
-                    else{
-                        return response.json();
-                    }
-                })
-                .then(data => {
-                    console.log('Success:', data);
-                }) 
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-            }
-            else{
-                console.error('No user data found!');
-            }
-        });
-
-    </script>
+    <h1>Telegram WebApp Client</h1>
+    <p id="userInfo"></p>
     
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        // Initialize the WebApp
+        Telegram.WebApp.ready();
+
+        // Accessing initDataUnsafe - NOT for trusting or using sensitive logic
+        const initDataUnsafe = Telegram.WebApp.initDataUnsafe;
+
+        // Display the user's data on the web page
+        const userInfoElement = document.getElementById('userInfo');
+
+        if (initDataUnsafe && initDataUnsafe.user) {
+            const user = initDataUnsafe.user;
+            userInfoElement.innerHTML = `
+                <strong>User Info:</strong><br>
+                ID: ${user.id}<br>
+                First Name: ${user.first_name}<br>
+                Last Name: ${user.last_name || 'N/A'}<br>
+                Username: ${user.username || 'N/A'}<br>
+                Language Code: ${user.language_code || 'N/A'}
+            `;
+        } else {
+            userInfoElement.innerHTML = 'No user data available.';
+        }
+
+        // Optional: You can also close the WebApp with a button
+        function closeApp() {
+            Telegram.WebApp.close();
+        }
+    </script>
+
+    <button onclick="closeApp()">Close WebApp</button>
 </body>
 </html>
